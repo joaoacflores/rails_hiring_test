@@ -18,6 +18,7 @@ class RidingsController < ApplicationController
 
   # GET /ridings/1/edit
   def edit
+    @polling_location = PollingLocation.new(riding: @riding)
   end
 
   # POST /ridings or /ridings.json
@@ -37,14 +38,10 @@ class RidingsController < ApplicationController
 
   # PATCH/PUT /ridings/1 or /ridings/1.json
   def update
-    respond_to do |format|
-      if @riding.update(riding_params)
-        format.html { redirect_to riding_url(@riding), notice: "Riding was successfully updated." }
-        format.json { render :show, status: :ok, location: @riding }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @riding.errors, status: :unprocessable_entity }
-      end
+    if @riding.update(riding_params)
+      redirect_to @riding, notice: 'Riding and polling locations were successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -61,11 +58,12 @@ class RidingsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_riding
-      @riding = Riding.find(params[:id])
+      @riding = Riding.includes(:polling_locations).includes(:polls).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def riding_params
-      params.require(:riding).permit(:name, :riding_code, :province)
+      params.require(:riding).permit(:name, :riding_code, :province, polling_locations_attributes: [:id, :title, :address, :city, :postal_code, :polls_list])
     end
+
 end

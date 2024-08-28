@@ -6,6 +6,8 @@
 
 <h2 class="mt-4 text-lg font-semibold leading-6 text-gray-900">Polling locations</h2>
 
+<div style="overflow:hidden"><a href="/ridings/<%= @riding.id %>/edit" id="edit">Edit Polling Locations</a></div>
+
 <div class="mt-6 p-6 border border-gray-500 rounded-lg grid grid-cols-6 gap-y-2">
   <div class="col-span-2 font-medium">
     Title
@@ -53,3 +55,16 @@
     <div class="col-span-5 text-center mt-3">No polling locations</div>
   <% end%>
 </div>
+
+<style>
+  a#edit{
+    width: 250px;
+    background: #D01E4F;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    float: right;
+    text-align: center;
+  }
+</style>

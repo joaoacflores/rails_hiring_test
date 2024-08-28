@@ -1,0 +1,143 @@
+<% @riding.polling_locations.each_with_index do |polling_location, index| %>
+  <% if polling_location.errors.any? %>
+    <div class="error-messages">
+      <h3>Errors for Polling Location <%= index + 1 %> (<%= polling_location[:title] %>):</h3>
+      <ul>
+        <% polling_location.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
+
+<%= form_with model: @riding, url: { action: "update" }, local: true, id: 'polling-locations' do |f| %>
+  <%= f.submit "Save Changes" %>
+
+  <div style="float:left">
+    <h1 class="text-xl font-semibold leading-6 text-gray-900"><%= @riding.name %> - <%= @riding.riding_code %></h1>
+    <%= @riding.province %>
+    <h2 class="mt-4 text-lg font-semibold leading-6 text-gray-900">Edit polling locations</h2>
+  </div>
+
+  <div style="clear:both"></div>
+  <div class="mt-6 p-6 border border-gray-500 rounded-lg grid grid-cols-6 gap-y-2">
+    <!-- Existing Fields -->
+    <% if @riding.polling_locations.any? %>
+      <%= f.fields_for :polling_locations do |pl_form| %>
+        <div class="col-span-2">
+          <%= pl_form.text_field :title, class: (pl_form.object.errors[:title].any? ? 'error' : '') %>
+          <% if pl_form.object.errors[:title].any? %>
+            <div class="field-error"><%= pl_form.object.errors[:title].first %></div>
+          <% end %>
+        </div>
+        <div class="col-span-1">
+          <%= pl_form.text_field :address, class: (pl_form.object.errors[:address].any? ? 'error' : '') %>
+          <% if pl_form.object.errors[:address].any? %>
+            <div class="field-error"><%= pl_form.object.errors[:address].first %></div>
+          <% end %>
+        </div>
+        <div class="col-span-1">
+          <%= pl_form.text_field :city, class: (pl_form.object.errors[:city].any? ? 'error' : '') %>
+          <% if pl_form.object.errors[:city].any? %>
+            <div class="field-error"><%= pl_form.object.errors[:city].first %></div>
+          <% end %>
+        </div>
+        <div class="col-span-1">
+          <%= pl_form.text_field :postal_code, class: (pl_form.object.errors[:postal_code].any? ? 'error' : '') %>
+          <% if pl_form.object.errors[:postal_code].any? %>
+            <div class="field-error"><%= pl_form.object.errors[:postal_code].first %></div>
+          <% end %>
+        </div>
+        <div class="col-span-1">
+          <%= pl_form.text_field :polls_list %>
+        </div>
+        <%= pl_form.hidden_field :id %>
+      <% end %>
+    <% else %>
+      <div class="col-span-5 text-center mt-3">No polling locations</div>
+    <% end %>
+    </div>
+
+  <div style="overflow:hidden" class="mt-3"><%= f.submit "Save Changes" %></div>
+
+<% end %>
+
+    <!-- New Polling Location Form -->
+    <%= form_with model: PollingLocation.new, local: true, id: 'new-polling-location' do |f| %>
+      <h2 class="mt-4 text-lg font-semibold leading-6 text-gray-900">New polling location</h2>
+      <div class="mt-6 p-6 border border-gray-500 rounded-lg grid grid-cols-6 gap-y-2">
+        <div class="col-span-2 font-medium">Title</div>
+        <div class="col-span-1 font-medium">Address</div>
+        <div class="col-span-1 font-medium">City</div>
+        <div class="col-span-1 font-medium">Postal code</div>
+        <div class="col-span-1 font-medium">Polls</div>
+        
+        <div class="col-span-2">
+          <%= f.text_field :title %>
+        </div>
+        <div class="col-span-1">
+          <%= f.text_field :address %>
+        </div>
+        <div class="col-span-1">
+          <%= f.text_field :city %>
+        </div>
+        <div class="col-span-1">
+          <%= f.text_field :postal_code %>
+        </div>
+        <div class="col-span-1">
+          <%= f.text_field :polls_list %>
+        </div>
+        <%= f.hidden_field :riding_id, value: @riding.id %>
+      </div>
+      <div style="overflow:hidden" class="mt-3"><%= f.submit "Create Polling Location" %></div>
+    <% end %>
+  </div>
+
+
+
+<style>
+    form input[type=text]{
+        border: solid 1px #cccccc;
+        padding: 0px 5px;
+        border-radius: 5px;
+        margin-right: 8px;
+        width: -webkit-fill-available;
+    }
+
+    form input[type=text].error {
+        border: solid 1px #D01E4F;
+        color
+    }
+
+    form input[type=submit] {
+        width: 200px;
+        background: #D01E4F;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        float: right;
+    }
+
+    .error-messages {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .error-messages h2 {
+        margin-top: 0;
+    }
+
+    .error-messages ul {
+        padding-left: 20px; 
+    }
+
+    .field-error{
+        color: #721c24;
+        text-transform: capitalize
+    }
+</style>
